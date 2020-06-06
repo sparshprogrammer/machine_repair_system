@@ -97,6 +97,7 @@
                         <field name="client_mobile"/>
                         <field name="client_phone"/>
                         <field name="origin"/>
+                        <field name="inspection" widget="text"/>
                       </group>
                     </group>
                     <notebook>

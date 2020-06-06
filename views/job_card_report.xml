@@ -48,7 +48,31 @@
                     </div>
 
                     <br/><br/>
-<!--                    For split-->
+<!-- Inspection -->
+                    <div class="col-12 row">
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="card-title">Inspection/Assessment</h3>
+                  </div>
+                  <div class="table-responsive">
+                    <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper no-footer">
+                        <table class="table card-table table-vcenter text-nowrap datatable dataTable no-footer" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info">
+                      <thead>
+                        <tr role="row">
+                            <td>
+                                <t t-esc="doc.inspection"/>
+                            </td>
+                        </tr>
+                      </thead>
+                        </table>
+                    </div>
+                  </div>
+                </div>
+                    </div>
+
+
+                    <br/><br/>
+<!--                    For Material Issued-->
                     <div class="col-12 row">
                 <div class="card">
                   <div class="card-header">
@@ -91,6 +115,7 @@
                   </div>
                 </div>
 </div>
+
 
 
 

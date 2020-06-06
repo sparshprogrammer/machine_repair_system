@@ -47,6 +47,7 @@ class JobCard(models.Model):
     amount_total = fields.Float(string="Total", readonly=True, compute="_get_total",
                                 digits=dp.get_precision('Product Price'))
     description = fields.Text(string="Description")
+    inspection = fields.Text(string="Inspection")
 
     @api.model
     def create(self, values):
