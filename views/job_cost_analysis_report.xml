@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+<template id="job_cost_report">
+       <t t-call="web.basic_layout">
+                <div class="page">
+
+
+                <div class="container">
+                    <div class="header" style="border-bottom: 1px solid black;">
+                        <h3 class="text-center">
+                            <img t-att-src="image_data_uri(res_company.logo)" style="max-height: 80px;" alt="Logo"/>
+                        </h3>
+                        <h4 class="text-center">
+                            JOB COST AND REVENUE ANALYSIS
+                        </h4>
+                        <div class="text-center text-muted">(CUMULATIVE OPEN AND CLOSED DURING THE PERIOD)</div>
+                    </div>
+
+                    <div class="table-responsive">
+                    <table class="table card-table table-striped table-vcenter">
+                      <thead>
+                          <tr>
+                              <b>Report Date:</b><t class="small" t-esc="form['create_date']"/>
+                          </tr>
+                        <tr>
+                          <th>S. No.</th>
+                          <th>Job</th>
+                          <th>Total Revenue</th>
+                          <th>Material Cost</th>
+                          <th>Labour Cost</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                          <t t-set="total_jobs_amount" t-as="0" />
+                          <t t-set="total_material_cost" t-as="0" />
+                          <t t-set="total_service_cost" t-as="0" />
+                          <t t-foreach="job_cards" t-as="doc">
+                            <t t-set="total_jobs_amount" t-as="total_jobs_amount + doc['amount_total']" />
+                            <t t-set="total_material_cost" t-as="total_material_cost + doc['material_cost']" />
+                            <t t-set="total_service_cost" t-as="total_service_cost + doc['service_cost']" />
+                        <tr>
+                          <td>1</td>
+                          <td><t t-esc="doc['name']" /></td>
+                          <td><t t-esc="doc['amount_total']" /></td>
+                          <td><t t-esc="doc['material_cost']" /></td>
+                          <td><t t-esc="doc['service_cost']" /></td>
+                          <td><t t-esc="doc['state']" /></td>
+                        </tr>
+                          </t>
+                          <tr>
+                          <td><b>Total</b></td>
+                          <td></td>
+                          <td><b><t t-esc="sum(doc['amount_total'] for doc in job_cards)"/> </b></td>
+                          <td><b><t t-esc="sum(doc['material_cost'] for doc in job_cards)"/> </b></td>
+                          <td><b><t t-esc="sum(doc['service_cost'] for doc in job_cards)"/> </b></td>
+                          <td></td>
+                        </tr>
+                          <tr>
+                              <td>Prepared By:</td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td>Verified By:</td>
+                          </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+            </div>
+       </t>
+      </template>
+
+</data>
+</odoo>

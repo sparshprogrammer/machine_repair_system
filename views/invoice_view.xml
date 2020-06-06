@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+     <record model="ir.ui.view" id="account_invoice_job_card_form">
+            <field name="name">Account Invoice Job Card</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//field[@name='partner_id']" position="after">
+                       <field name="job_card"/>
+                   </xpath>
+                </data>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="account_invoice_supplier_job_card_form">
+            <field name="name">Account Invoice Supplier Job Card</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//field[@name='partner_id']" position="after">
+                       <field name="job_card"/>
+                   </xpath>
+                </data>
+            </field>
+        </record>
+
+</odoo>

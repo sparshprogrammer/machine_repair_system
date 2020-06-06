@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+
+      <record model="ir.actions.act_window" id="action_issue_material">
+          <field name="name">Issue Material</field>
+          <field name="res_model">issue.material</field>
+          <field name="view_mode">tree,form</field>
+      </record>
+
+      <record id="view_issue_material_tree" model="ir.ui.view">
+         <field name="name">issue.material.tree</field>
+         <field name="model">issue.material</field>
+         <field name="arch" type="xml">
+           <tree string="Issue Material">
+              <field name="voucher_no"/>
+              <field name="material"/>
+              <field name="qty"/>
+              <field name="date"/>
+            </tree>
+          </field>
+      </record>
+
+<record id="issue_material_form_view" model="ir.ui.view">
+<field name="name">Issue Material Form</field>
+<field name="model">issue.material</field>
+<field name="arch" type="xml">
+          <form string="Issue Material">
+                <sheet>
+
+                    <div class="oe_title">
+                     	<h3>
+                           <field name="voucher_no"/>
+                        </h3>
+                    </div>
+                    <group>
+                       <group>
+                                <field name="job_card"/>
+                            	<field name="date"/>
+                                <field name="material"/>
+                        </group>
+                        <group>
+                                <field name="job_card_line"/>
+                                <field name="qty"/>
+                                <field name="unit_price"/>
+
+                        </group>
+                    </group>
+           </sheet>
+    </form>
+</field>
+</record>
+
+
+      <menuitem id="issue_material_menu" name="Issue Material"
+                  parent="main_machinerepair_menu" action="action_issue_material"/>
+  </data>
+</odoo>

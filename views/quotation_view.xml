@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+      <template id="report_jobquotation_document">
+        <t t-call="web.external_layout">
+
+        </t>
+      </template>
+      <template id="report_jobquotation">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Report Title</h2>
+                        <p>This object's name is <span t-field="doc.name"></span></p>
+                    </div>
+                </t>
+            </t>
+        </t>
+      </template>
+        <report
+            id="action_report_quotation"
+            string="Quotation"
+            model="job.quotation"
+            report_type="qweb-pdf"
+            file="machine_repair_system.report_jobquotation"
+            name="machine_repair_system.report_jobquotation"
+            print_report_name="(object.state in ('quotation', 'job_card') and 'Quotation - %s' % (object.name)) or 'Order - %s' % (object.name)"
+        />
+
+            <record id="view_tree_job_quotation" model="ir.ui.view">
+              <field name="name">Job Quotation Tree</field>
+              <field name="model">job.quotation</field>
+              <field name="type">tree</field>
+              <field name="arch" type="xml">
+                <tree>
+                  <field name="name"/>
+                  <field name="create_date"/>
+                  <field name="client"/>
+                  <field name="material_amount"/>
+                  <field name="service_amount"/>
+                  <field name="amount_total"/>
+                  <field name="state"/>
+                </tree>
+              </field>
+            </record>
+
+            <record id="view_job_quotation_filter" model="ir.ui.view">
+          <field name="name">job.quotation.select</field>
+          <field name="model">job.quotation</field>
+          <field name="arch" type="xml">
+              <search string="Search Job Quotation">
+                  <field name="name" string="Job Quotation"/>
+                  <field name="state"/>
+                  <filter string="Quotations" name="quotations" domain="[('state','=','quotation')]"/>
+                  <filter string="Converted to Job Card" domain="[('state','=','job_card')]" name="job_card" />
+                  <filter string="Cancelled" name="cancel" domain="[('state','=','cancel')]"/>
+
+
+                  <group expand="0" string="Group By">
+                      <filter string="Client" name="client" domain="[]" context="{'group_by':'client'}"/>
+                      <filter string="Status" name="state" domain="[]" context="{'group_by':'state'}"/>
+                  </group>
+              </search>
+          </field>
+    </record>
+
+            <record id="view_form_job_quotation" model="ir.ui.view">
+            <field name="name">Job Quotation Form</field>
+            <field name="model">job.quotation</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Job Quotation" class="o_sale_order">
+                    <header>
+                        <button string="Set to Quotation" type="object" name="set_to_quotation" attrs="{'invisible': [('state', 'in', ['quotation','job_card','done'])]}" class="oe_highlight"/>
+                        <button string="Confirm Job" type="object" name="assign_job_card" attrs="{'invisible': [('state', 'in', ['job_card','cancel','done'])]}" class="oe_highlight"/>
+                        <button string="Cancel" type="object" name="cancel_job" attrs="{'invisible': [('state', 'in', 'done')]}" class="oe_highlight"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" />
+                        </h1>
+                    </div>
+                    <group name="group-top">
+                      <group name="group-top">
+                        <field name="client" attrs="{'readonly':[('state','=','job_card')]}"/>
+                        <field name="client_email"/>
+                        <field name="priority" widget="priority"/>
+                      </group>
+                      <group>
+                        <field name="client_mobile"/>
+                        <field name="client_phone"/>
+                      </group>
+                    </group>
+                    <notebook>
+                        <page string="Machines">
+                            <field name="job_quotation_lines" attrs="{'readonly':[('state','=','job_card')]}" >
+                                <tree string="Job Quotation Line" editable="bottom">
+                                    <field name="name"/>
+                                    <field name="machine"/>
+                                    <field name="qty"/>
+                                    <field name="problem" widget="section_and_note_text"/>
+                                    <field name="material_cost_rate"/>
+                                    <field name="service_cost_rate"/>
+                                    <field name="taxes_id" widget="many2many_tags"/>
+                                    <field name="price_subtotal_with_tax"/>
+                                </tree>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
+                                <field name="amount_untaxed"/>
+                                <field name="amount_tax"/>
+                                <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                    <label for="amount_total"/>
+                                </div>
+                                <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator"/>
+                            </group>
+                        </page>
+
+                        <page string="Material Required">
+                            <field name="job_quotation_material_lines" context="{'default_job_quotation_material_id': id}" attrs="{'readonly':[('state','=','job_card')]}">
+                                <tree string="Material Lines" editable="bottom">
+                                    <field name="job_quotation_material_id" invisible="1"/>
+                                    <field name="job_quotation_line_id" domain="[('job_quotation_id', '=', job_quotation_material_id)]"/>
+                                    <field name="material"/>
+                                    <field name="quantity"/>
+                                    <field name="unit_price" widget="monetary"/>
+                                    <field name="total_price" widget="monetary"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Worked Hours">
+                            <field name="job_quotation_worked_hours_lines" context="{'default_job_quotation_id': id}" attrs="{'readonly':[('state','=','job_card')]}">
+                                <tree string="Worked Hours" editable="bottom">
+                                    <field name="job_quotation_id" invisible="1"/>
+                                    <field name="job_quotation_line_id" domain="[('job_quotation_id', '=', job_quotation_id)]"/>
+                                    <field name="technician"/>
+                                    <field name="service"/>
+                                    <field name="rate_of_service" widget="monetory"/>
+                                    <field name="hours"/>
+                                    <field name="total_price" widget="monetory"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Assigned Technicians" attrs="{'invisible': [('state', '=', 'quotation')]}">
+                            <field name="assigned_ids" attrs="{'readonly':[('state','=','job_card')]}"/>
+                        </page>
+                    </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+    <record model="ir.actions.act_window" id="action_customer">
+      <field name="name">Customer</field>
+      <field name="res_model">res.partner</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_job_quotation">
+      <field name="name">Job Quotation</field>
+      <field name="res_model">job.quotation</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_machine">
+      <field name="name">Machines</field>
+      <field name="res_model">product.template</field>
+      <field name="view_mode">tree,form</field>
+      <field name="context">{'default_is_machine':True}</field>
+      <field name="domain">[('is_machine', '=', True)]</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_material">
+      <field name="name">Material</field>
+      <field name="res_model">product.template</field>
+      <field name="view_mode">tree,form</field>
+      <field name="context">{'default_is_material':True}</field>
+      <field name="domain">[('is_material', '=', True)]</field>
+    </record>
+    <record model="ir.actions.act_window" id="action_employee">
+      <field name="name">Employee</field>
+      <field name="res_model">res.partner</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+      
+  </data>
+</odoo>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+      <template id="report_job_card">
+        <t t-call="web.basic_layout">
+            <t t-foreach="docs" t-as="doc">
+                <div class="page">
+            <div class="col-12 header" style="border-bottom: 1px solid black;">
+                <h3 class="text-center">
+                    <img t-att-src="image_data_uri(res_company.logo)" style="max-height: 100px;" alt="Logo"/>
+                </h3>
+                <h3 class="text-center">
+                    Job Card (<t t-esc="doc.name"/> )
+                </h3>
+            </div>
+                    <div class="col-12 row">
+                        <div class="col-2 ">
+                            <b>Description</b>
+                        </div>
+                        <div class="col-4 pr-10">
+                            <t t-esc="doc.description"/>
+                        </div>
+                        <div class="col-2 ">
+                            <b>Make</b>
+                        </div>
+                        <div class="col-4 ">
+                            <t t-set="make" t-value="''" />
+                            <t t-foreach="doc.job_card_lines" t-as="line">
+                                <t t-set="make" t-value="make + line.machine.product_brand_id.name + ' | '" />
+                            </t>
+                            <t class="small" t-esc="make" />
+                        </div>
+                    </div>
+
+                    <div class="col-12 row">
+                        <div class="col-2">
+                            <b>Day in:</b>
+                        </div>
+                        <div class="col-4">
+                            <t class="small" t-esc="doc.create_date" t-field-options='{"format": "MM/dd/yyyy"}'/>
+                        </div>
+                        <div class="col-2">
+                            <b>Date Out</b>
+                        </div>
+                        <div class="col-4">
+                            <t class="small" t-esc="doc.create_date" t-field-options='{"format": "d MMMM y"}'/>
+                        </div>
+                    </div>
+
+                    <br/><br/>
+<!--                    For split-->
+                    <div class="col-12 row">
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="card-title">Material Issued</h3>
+                  </div>
+                  <div class="table-responsive">
+                    <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper no-footer">
+                        <table class="table card-table table-vcenter text-nowrap datatable dataTable no-footer" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info">
+                      <thead>
+                        <tr role="row">
+                            <th class="w-1 sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-sort="ascending" aria-label="No.: activate to sort column descending" style="width: 45px;">No.</th>
+                            <th class="sorting" tabindex="0" rowspan="1" colspan="1" aria-label="Invoice Subject: activate to sort column ascending" style="width: 171px;">Material</th>
+                            <th class="sorting" tabindex="0" rowspan="1" colspan="1" aria-label="Client: activate to sort column ascending" style="width: 130px;">Material Description</th>
+                            <th class="sorting" tabindex="0" rowspan="1" colspan="1" aria-label="VAT No.: activate to sort column ascending" style="width: 81px;">Quantity</th>
+                            <th class="sorting" tabindex="0" rowspan="1" colspan="1" aria-label="Created: activate to sort column ascending" style="width: 103px;">Issue Date</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <t t-set="s_no" t-value="0"/>
+                        <t t-foreach="doc.job_card_material_lines" t-as="material">
+                            <t t-set="s_no" t-value="s_no + 1"/>
+                            <tr role="row" class="odd">
+                              <td class="sorting_1"><span class="text-muted"><t t-esc="s_no"/></span></td>
+                              <td><t t-esc="material.material.name"/> </td>
+                              <td>
+                                <t t-esc="material.material.description"/>
+                              </td>
+                              <td>
+                                <t t-esc="material.quantity"/>
+                              </td>
+                              <td>
+                                <t t-esc="material.create_date"/>
+                              </td>
+                            </tr>
+                            </t>
+                      </tbody>
+                    </table>
+                        </div>
+
+                  </div>
+                </div>
+</div>
+
+
+
+                  </div>
+            </t>
+        </t>
+      </template>
+        <report
+            id="action_report_job_card"
+            string="Job Card"
+            model="job.card"
+            report_type="qweb-pdf"
+            file="machine_repair_system.report_job_card"
+            name="machine_repair_system.report_job_card"
+            print_report_name="(object.state in ('quotation', 'job_card') and 'Quotation - %s' % (object.name)) or 'Order - %s' % (object.name)"
+        />
+    </data>
+</odoo>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+     <record id="job_cost_report" model="ir.actions.report">
+        <field name="name">Job Cost Report</field>
+        <field name="model">job.card</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">machine_repair_system.job_cost_report</field>
+    </record>
+
+    <record id="job_cost_report_form" model="ir.ui.view">
+        <field name="name">job.cost.analysis.wizard</field>
+        <field name="model">create.job.cost.report</field>
+        <field name="arch" type="xml">
+            <form string="Create Job Cost Report">
+                <group>
+                    <field name="type"/>
+                </group>
+                <footer>
+                    <button name="create_report" string="Create Report" type="object" class="oe_highlight"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+
+        </field>
+
+    </record>
+
+    <record id="create_job_cost_analysis_report" model="ir.actions.act_window">
+        <field name="name">Create Report</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">create.job.cost.report</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="job_cost_report_form" />
+        <field name="target">new</field>
+    </record>
+    <menuitem id="job_cost_report_menu" name="Job Cost Report"
+                  parent="main_machinerepair_menu" action="create_job_cost_analysis_report"/>
+</odoo>

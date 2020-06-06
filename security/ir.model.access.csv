@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+machine_repair_job_quotation, Job Quotation,model_job_quotation,,1,1,1,1
+machine_repair_job_quotation_line,Job Quotation Line,model_job_quotation_line,,1,1,1,1
+machine_repair_job_quotation_material_line,Job Card Material Line,model_job_quotation_material_line,,1,1,1,1
+machine_repair_job_quotation_worked_hours_line,Job Quotation Worked Hours Line,model_job_quotation_worked_hours_line,,1,1,1,1
+machine_repair_job_card,Job Card,model_job_card,,1,1,1,1
+machine_repair_job_card_line,Job Card Line,model_job_card_line,,1,1,1,1
+machine_repair_job_card_material_line,Job Card Material Line,model_job_card_material_line,,1,1,1,1
+machine_repair_job_card_worked_hours_line,Job Card Worked Hours Line,model_job_card_worked_hours_line,,1,1,1,1
+machine_repair_job_card_subcontract,Job Card Subcontract,model_job_card_subcontract,,1,1,1,1
+machine_repair_service,Service,model_machine_service,,1,1,1,1
+machine_repair_issue_materials,Issue Materials,model_issue_material,,1,1,1,1
+machine_repair_delivery_note,Delivery Note,model_delivery_note,,1,1,1,1

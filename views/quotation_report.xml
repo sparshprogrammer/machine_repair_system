@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+      <template id="report_quotation_document">
+        <t t-call="web.external_layout">
+
+        </t>
+      </template>
+      <template id="report_quotation">
+        <t t-call="web.basic_layout">
+            <t t-foreach="docs" t-as="doc">
+                <div class="page">
+            <div class="header" style="border-bottom: 1px solid black;">
+                <h3 class="text-center">
+                    <img t-att-src="image_data_uri(res_company.logo)" style="max-height: 100px;" alt="Logo"/>
+                </h3>
+                <h3 class="text-center">
+                    Quotation
+                </h3>
+            </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-6">
+                            <t t-esc="res_company.partner_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True, "phone_icons": False}'/>
+                            <div class="row">
+                                <div class="col-4">Telephone:</div>
+                                <div class="col-6"><t t-esc="res_company.partner_id.phone"/></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4">Email:</div>
+                                <div class="col-6"><t t-esc="res_company.partner_id.email"/></div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            To,
+                            <t t-esc="doc.client" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True, "phone_icons": True}'/>
+                            <div class="row">
+                                <div class="col-4">Telephone:</div>
+                                <div class="col-6"><t t-esc="client_phone"/></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4">Email:</div>
+                                <div class="col-6"><t t-esc="client_email"/></div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+                    <div class="row">
+                        <div class="col-2 border">
+                            Your ref.
+                        </div>
+                        <div class="col-5 border">
+
+                        </div>
+                        <div class="col-2 border">
+                            Quotation No
+                        </div>
+                        <div class="col-4 border">
+                            <t class="small" t-esc="doc.name" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-2 border">
+                            Job No
+                        </div>
+                        <div class="col-5 border">
+
+                        </div>
+                        <div class="col-2 border">
+                            Date
+                        </div>
+                        <div class="col-4 border">
+                            <t class="small" t-esc="doc.create_date" t-field-options='{"format": "d MMMM y"}'/>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 font-italic">
+                            Brief Description
+                        </div>
+                        <div class="col-6">
+                            Need something here
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                    <table class="table card-table table-striped">
+                      <thead>
+                        <tr>
+                          <th>Sr No</th>
+                          <th>Work Description</th>
+                          <th>Quantity</th>
+                          <th>Unit Price</th>
+                          <th>Amount</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                          <t t-set="ser_no" t-value="1" />
+                          <t t-set="total" t-value="1" />
+                          <t t-foreach="doc.job_quotation_lines" t-as="line">
+                              <tr>
+                                  <td class="w-1">
+                                      <t t-esc="ser_no"/>
+                                      <t t-set="ser_no" t-value="ser_no+1"/>
+                                  </td>
+                                  <td>What will come here</td>
+                                  <td><t t-esc="line.qty"></t> </td>
+                                  <td class="text-nowrap">What will come here</td>
+                                  <td class="w-1"><t t-esc="line.price_subtotal_with_tax"></t></td>
+                              </tr>
+                              <tr>
+                                  <td>Total</td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td><t t-esc="doc.amount_total"></t></td>
+                              </tr>
+                              <tr>
+                                  <td>Currency</td>
+                                  <td>Put Currency Name here</td>
+                                  <td></td>
+                                  <td></td>
+                                  <td>INR/USD/EUR</td>
+                              </tr>
+                          </t>
+                      </tbody>
+                    </table>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-3 font-italic small">
+                            TERMS OF PAYMENT:
+                        </div>
+                        <div class="col-9 small">
+                            Put Value here
+                        </div>
+                    </div>
+                     <div class="row">
+                        <div class="col-3 font-italic small">
+                            WARRANTY:
+                        </div>
+                        <div class="col-9 small">
+                            Put Value here
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3 font-italic small">
+                            DELIVERY:
+                        </div>
+                        <div class="col-9 small">
+                            Put Value here
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3 font-italic small">
+                            VALIDITY OF QUOTATION:
+                        </div>
+                        <div class="col-9 small">
+                            Put Value here
+                        </div>
+                    </div><br/><br/>
+                    <div class="card border-dark w-100">
+  <div class="card-body">
+    <p class="card-text" style="font-size:13px;">This is a computerized document and as part of a course of trading between SAUDIA ELECTRICAL SERVICES and its clients, is valid without an original signature / company seal.</p>
+      <div class="w-100 text-right">(Administration Manager)</div>
+      <br/><br/>
+  </div>
+</div>
+                  </div>
+            </t>
+        </t>
+      </template>
+        <report
+            id="action_report_quotation"
+            string="Quotation / Job Card"
+            model="job.quotation"
+            report_type="qweb-pdf"
+            file="machine_repair_system.report_quotation"
+            name="machine_repair_system.report_quotation"
+            print_report_name="(object.state in ('quotation', 'job_card') and 'Quotation - %s' % (object.name)) or 'Order - %s' % (object.name)"
+        />
+    </data>
+</odoo>

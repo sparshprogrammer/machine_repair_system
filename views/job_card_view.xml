@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+      <template id="report_jobcard_document">
+        <t t-call="web.external_layout">
+
+        </t>
+      </template>
+      <template id="report_jobcard">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Report Title</h2>
+                        <p>This object's name is <span t-field="doc.name"></span></p>
+                    </div>
+                </t>
+            </t>
+        </t>
+      </template>
+        <report
+            id="action_report_quotation"
+            string="Quotation / Job Card"
+            model="job.card"
+            report_type="qweb-pdf"
+            file="machine_repair_system.report_jobcard"
+            name="machine_repair_system.report_jobcard"
+            print_report_name="(object.state in ('quotation', 'job_card') and 'Quotation - %s' % (object.name)) or 'Order - %s' % (object.name)"
+        />
+
+            <record id="view_tree_job_card" model="ir.ui.view">
+              <field name="name">Job Card Tree</field>
+              <field name="model">job.card</field>
+              <field name="type">tree</field>
+              <field name="arch" type="xml">
+                <tree>
+                  <field name="name"/>
+                  <field name="create_date"/>
+                  <field name="client"/>
+                  <field name="origin"/>
+                  <field name="material_amount"/>
+                  <field name="service_amount"/>
+                  <field name="state"/>
+
+                </tree>
+              </field>
+            </record>
+
+
+            <record id="view_job_quotation_filter" model="ir.ui.view">
+          <field name="name">job.card.select</field>
+          <field name="model">job.card</field>
+          <field name="arch" type="xml">
+              <search string="Search Job Card">
+                  <field name="name" string="Job Card"/>
+                  <field name="state"/>
+                  <filter string="Quotations" name="quotations" domain="[('state','=','quotation')]"/>
+                  <filter string="Converted to Job Card" domain="[('state','=','job_card')]" name="job_card" />
+                  <filter string="Done" domain="[('state','=','done')]" name="done" />
+                  <filter string="Cancelled" name="cancel" domain="[('state','=','cancel')]"/>
+                  <group expand="0" string="Group By">
+                      <filter string="Client" name="client" domain="[]" context="{'group_by':'client'}"/>
+                      <filter string="Status" name="state" domain="[]" context="{'group_by':'state'}"/>
+                  </group>
+              </search>
+          </field>
+    </record>
+
+            <record id="view_form_job_card" model="ir.ui.view">
+            <field name="name">Job Card Form</field>
+            <field name="model">job.card</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Job Card" class="o_sale_order">
+                    <header>
+                        <button string="Create Quotation" type="object" name="create_invoice" attrs="{'invisible': [('state', 'in', ['quotation','job_card'])]}" class="oe_highlight"/>
+                        <button string="Set to Quotation" type="object" name="set_to_quotation" attrs="{'invisible': [('state', 'in', ['quotation','job_card','done'])]}" class="oe_highlight"/>
+                        <button string="Confirm Job" type="object" name="assign_job_card" attrs="{'invisible': [('state', 'in', ['job_card','cancel','done'])]}" class="oe_highlight"/>
+                        <button string="Job Done" type="object" name="job_done" attrs="{'invisible': [('state', 'in', ['quotation','cancel','done'])]}" class="oe_highlight"/>
+                        <button string="Cancel" type="object" name="cancel_job" attrs="{'invisible': [('state', 'in', 'done')]}" class="oe_highlight"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" />
+                        </h1>
+                    </div>
+                    <group name="group-top">
+                      <group name="group-top">
+                        <field name="client" attrs="{'readonly':[('origin','!=', False)]}"/>
+                        <field name="client_email"/>
+                        <field name="priority" widget="priority"/>
+                        <field name="description" widget="text"/>
+                      </group>
+                      <group>
+                        <field name="client_mobile"/>
+                        <field name="client_phone"/>
+                        <field name="origin"/>
+                      </group>
+                    </group>
+                    <notebook>
+                        <page string="Machines">
+                            <field name="job_card_lines">
+                                <tree string="Job Card Line" editable="bottom">
+                                    <field name="name"/>
+                                    <field name="machine"/>
+                                    <field name="qty"/>
+                                    <field name="material_cost_rate" widget="monetary" options="{'field_digits': True}"/>
+                                    <field name="service_cost_rate" widget="monetary" options="{'field_digits': True}"/>
+                                    <field name="problem"/>
+                                    <field name="taxes_id" widget="many2many_tags"/>
+                                    <field name="price_subtotal_with_tax" widget="monetary" options="{'field_digits': True}"/>
+                                    <field name="status"/>
+                                </tree>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
+                                <field name="amount_untaxed"/>
+                                <field name="amount_tax"/>
+                                <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                    <label for="amount_total"/>
+                                </div>
+                                <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator"/>
+                            </group>
+                        </page>
+
+                        <page string="Material Issued">
+                            <field name="job_card_material_lines" context="{'default_job_card_material_id': id}">
+                                <tree string="Material Lines" create="false" delete="false" editable="false">
+                                    <field name="job_card_material_id" invisible="1"/>
+                                    <field name="job_card_line_id" domain="[('job_card_id', '=', job_card_material_id)]"/>
+                                    <field name="material"/>
+                                    <field name="quantity"/>
+                                    <field name="unit_price" widget="monetary" options="{'field_digits': True}"/>
+                                    <field name="total_price" widget="monetary" options="{'field_digits': True}"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Worked Hours">
+                            <field name="job_card_worked_hours_lines" context="{'default_job_card_id': id}">
+                                <tree string="Worked Hours" editable="bottom">
+                                    <field name="job_card_id" invisible="1"/>
+                                    <field name="job_card_line_id" domain="[('job_card_id', '=', job_card_id)]"/>
+                                    <field name="date"/>
+                                    <field name="technician"/>
+                                    <field name="service"/>
+                                    <field name="rate_of_service"/>
+                                    <field name="hours"/>
+                                    <field name="total_price"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Assigned Technicians" attrs="{'invisible': [('state', '=', 'quotation')]}">
+                            <field name="assigned_ids" />
+                        </page>
+                        <page string="Subcontracts" >
+                            <field name="job_card_sub_contract" >
+                                <tree editable="bottom">
+                                    <field name="vendor"/>
+                                    <field name="material"/>
+                                    <field name="qty"/>
+                                    <field name="bill_created" invisible="1"/>
+
+                                    <button name="create_bill" string="Create Bill" type="object" icon="fa-money text-success"
+                                            confirm="Are you sure you want to create bill ?" attrs="{'invisible': [('bill_created', '=', True)]}" />
+                                </tree>
+                            </field>
+
+                        </page>
+                    </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+    <record model="ir.actions.act_window" id="action_customer">
+      <field name="name">Customer</field>
+      <field name="res_model">res.partner</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_job_card">
+      <field name="name">Job Card</field>
+      <field name="res_model">job.card</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_machine">
+      <field name="name">Machines</field>
+      <field name="res_model">product.template</field>
+      <field name="view_mode">tree,form</field>
+      <field name="context">{'default_is_machine':True}</field>
+      <field name="domain">[('is_machine', '=', True)]</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_material">
+      <field name="name">Material</field>
+      <field name="res_model">product.template</field>
+      <field name="view_mode">tree,form</field>
+      <field name="context">{'default_is_material':True}</field>
+      <field name="domain">[('is_material', '=', True)]</field>
+    </record>
+    <record model="ir.actions.act_window" id="action_employee">
+      <field name="name">Employee</field>
+      <field name="res_model">res.partner</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+<record model="ir.actions.act_window" id="action_job_quotation">
+      <field name="name">Job Quotation</field>
+      <field name="res_model">job.quotation</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+
+        <menuitem id="main_machinerepair_menu" name="Machine Repair"/>
+        <!-- A first level in the left side menu is needed
+             before using action= attribute -->
+
+        <menuitem id="machinerepair" name="Machine Repair"
+                  parent="main_machinerepair_menu" action="action_job_quotation"/>
+        <menuitem action="account.action_invoice_tree1" id="menu_action_invoice_tree1_ext"
+                  parent="main_machinerepair_menu"/>
+        <menuitem id="quotation_menu" name="Quotation" parent="machinerepair"
+                  action="action_job_quotation" sequence="1"/>
+        <menuitem id="machine_product" name="Machine"
+                  parent="main_machinerepair_menu" action="action_machine"/>
+        <menuitem id="material_product" name="Material"
+                  parent="main_machinerepair_menu" action="action_material"/>
+        <menuitem id="machine_employee" name="Employee"
+                  parent="main_machinerepair_menu" action="action_employee"/>
+        <menuitem id="customer" name="Customers"
+                  parent="main_machinerepair_menu" action="action_customer"/>
+        <!-- the following menuitem should appear *after*
+             its parent openacademy_menu and *after* its
+             action course_list_action -->
+        <menuitem id="courses_menu" name="Job Card" parent="machinerepair"
+                  action="action_job_card"/>
+
+
+
+  </data>
+</odoo>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+      <record model="ir.actions.act_window" id="action_delivery_note">
+      <field name="name">Delivery Note</field>
+      <field name="res_model">delivery.note</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+      <record id="issue_material_tree_view" model="ir.ui.view">
+     <field name="name">Delivery Note Tree</field>
+     <field name="model">delivery.note</field>
+     <field name="arch" type="xml">
+       <tree string="Delivery Note">
+          <field name="date"/>
+          <field name="job_card"/>
+          <field name="job_card_line"/>
+          <field name="reference"/>
+          <field name="material"/>
+           <field name="qty"/>
+        </tree>
+      </field>
+   </record>
+
+      <!--student form view-->
+
+<record id="delivery_note_form_view" model="ir.ui.view">
+<field name="name">Delivery Note Form</field>
+<field name="model">delivery.note</field>
+<field name="arch" type="xml">
+          <form string="Delivery Note">
+                <sheet>
+                    <group>
+                       <group>
+                                <field name="job_card"/>
+                            	<field name="date"/>
+                                <field name="material"/>
+                        </group>
+                        <group>
+                                <field name="job_card_line"/>
+                                <field name="qty"/>
+                                <field name="reference"/>
+
+                        </group>
+                    </group>
+           </sheet>
+    </form>
+</field>
+</record>
+
+
+      <menuitem id="delivery_note_menu" name="Delivery Note"
+                  parent="main_machinerepair_menu" action="action_delivery_note"/>
+  </data>
+</odoo>

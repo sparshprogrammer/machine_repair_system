@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Sequences for job.card -->
+        <record id="seq_job_card" model="ir.sequence">
+            <field name="name">Job Card</field>
+            <field name="code">job.card</field>
+            <field name="prefix">JC</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_job_card_line" model="ir.sequence">
+            <field name="name">Job Card Line</field>
+            <field name="code">job.card.line</field>
+            <field name="prefix">JCL</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+         <record id="seq_job_quotation" model="ir.sequence">
+            <field name="name">Job Quotation</field>
+            <field name="code">job.quotation</field>
+            <field name="prefix">QTN</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_job_quotation_line" model="ir.sequence">
+            <field name="name">Job Quotation Line</field>
+            <field name="code">job.quotation.line</field>
+            <field name="prefix">QTNL</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_material_issue" model="ir.sequence">
+            <field name="name">Issue Material</field>
+            <field name="code">issue.material</field>
+            <field name="prefix">MAT</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+
+    </data>
+</odoo>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+      <record model="ir.actions.act_window" id="action_service">
+      <field name="name">Service</field>
+      <field name="res_model">machine.service</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+      <menuitem id="machine_service" name="Service"
+                  parent="main_machinerepair_menu" action="action_service"/>
+  </data>
+</odoo>
