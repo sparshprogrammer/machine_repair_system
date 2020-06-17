@@ -54,7 +54,6 @@ class JobQuotation(models.Model):
 
     @api.onchange("client")
     def onchange_client(self):
-        print("Here")
         self.client_email = self.client.email
         self.client_mobile = self.client.mobile
         self.client_phone = self.client.phone
@@ -161,6 +160,7 @@ class JobQuotationLines(models.Model):
         default='quotation')
     material_cost_rate = fields.Float(string="Material Cost Rate", compute="_get_material_cost", digits=dp.get_precision('Product Price'))
     service_cost_rate = fields.Float(string="Service Cost Rate", compute="_get_service_cost", digits=dp.get_precision('Product Price'))
+    total_rate = fields.Float(string="Total Rate", compute="_total_rate", digits=dp.get_precision('Product Price'))
 
     _sql_constraints = [
         ('uniq_machine', 'unique(machine, job_quotation_id)',
@@ -191,6 +191,11 @@ class JobQuotationLines(models.Model):
                     total_cost += line.total_price
             rec.material_cost_rate = total_cost
 
+    @api.depends("material_cost_rate", "service_cost_rate")
+    def _total_rate(self):
+        for rec in self:
+            rec.total_rate = rec.service_cost_rate + rec.material_cost_rate
+
     @api.depends("machine", "qty", "total_price")
     def price_job_card(self):
         job_card_line = self.env["job.quotation.line"].search([("id", '=', self.job_quotation_id)])
@@ -198,7 +203,8 @@ class JobQuotationLines(models.Model):
     @api.model
     def create(self, values):
         if values.get('name', _('New')) == _('New'):
-            values['name'] = self.env['ir.sequence'].next_by_code('job.quotation.line') or _('New')
+            job_quot = self.env['job.quotation'].browse(values["job_quotation_id"])
+            values['name'] = job_quot.name + "-" + str(len(job_quot.job_quotation_lines) + 1) or _('New')
         res = super(JobQuotationLines, self).create(values)
         return res
 
