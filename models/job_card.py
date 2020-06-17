@@ -58,7 +58,6 @@ class JobCard(models.Model):
 
     @api.onchange("client")
     def onchange_client(self):
-        print("Here")
         self.client_email = self.client.email
         self.client_mobile = self.client.mobile
         self.client_phone = self.client.phone
@@ -226,7 +225,6 @@ class JobCardMaterialLine(models.Model):
     @api.depends("unit_price", "material", "quantity", "total_price")
     def price_job_card(self):
         job_card_line = self.env["job.card.line"].search([("id", '=', self.job_card_material_id)])
-        print(job_card_line)
         job_card_line.material_cost_rate = self.total_price
 
     @api.onchange("job_card_line_id")
